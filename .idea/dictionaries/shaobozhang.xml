@@ -2,6 +2,9 @@
   <dictionary name="shaobozhang">
     <words>
       <w>figsize</w>
+      <w>imputer</w>
+      <w>strat</w>
+      <w>xlsx</w>
     </words>
   </dictionary>
 </component>
