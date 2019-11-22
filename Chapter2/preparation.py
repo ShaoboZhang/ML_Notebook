@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 
 
 def data_division():
+    housing = pd.read_csv('housing.csv')
     # data stratified
     housing['income_cat'] = np.ceil(housing['median_income'] / 1.5)
     housing['income_cat'].where(housing['income_cat'] < 5, 5.0, inplace=True)

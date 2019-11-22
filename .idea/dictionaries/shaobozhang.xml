@@ -1,8 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="shaobozhang">
     <words>
+      <w>attribs</w>
       <w>figsize</w>
       <w>imputer</w>
+      <w>kargs</w>
+      <w>scaler</w>
+      <w>sklearn</w>
       <w>strat</w>
       <w>xlsx</w>
     </words>
