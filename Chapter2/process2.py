@@ -38,7 +38,7 @@ if __name__ == '__main__':
         ('attribs_adder', CombinedAttributesAdder()),
         ('std_scaler', StandardScaler()),
     ])
-    # pipeline for labels
+    # pipeline for all
     full_pipeline = ColumnTransformer([
         ('num', num_pipeline, num_attribs),
         ('cat', OneHotEncoder(), cat_attribs),
