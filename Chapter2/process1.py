@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from Chapter2.preparation import data_division
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -21,11 +22,11 @@ class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
             return np.c_[X, rooms_per_household, population_per_household]
 
 
-if __name__ == '__main__':
+def pipeline():
     # data acquisition
-    housing, test = data_division()
-    housing_num = housing.drop(labels='ocean_proximity', axis=1)
-    housing_cat = housing[['ocean_proximity']]
+    train_set, test_set = data_division()
+    housing_num = train_set.drop(labels='ocean_proximity', axis=1)
+    housing_cat = train_set[['ocean_proximity']]
 
     # data clean
     imputer = SimpleImputer(strategy='median')
@@ -43,4 +44,14 @@ if __name__ == '__main__':
 
     # data scale
     std_scaler = StandardScaler()
-    X = std_scaler.fit_transform(X)
+
+    X_train: np.ndarray = std_scaler.fit_transform(X)
+    y_train: pd.Series = train_set['median_house_value'].copy()
+    X_test: pd.DataFrame = test_set.drop(labels='ocean_proximity', axis=1)
+    y_test: pd.Series = test_set['median_house_value'].copy()
+
+    return X_train, X_test, y_train, y_test
+
+
+if __name__ == '__main__':
+    housing_prepared = pipeline()[0]
