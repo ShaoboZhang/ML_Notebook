@@ -25,29 +25,38 @@ class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
 def pipeline():
     # data acquisition
     train_set, test_set = data_division()
-    housing_num = train_set.drop(labels='ocean_proximity', axis=1)
-    housing_cat = train_set[['ocean_proximity']]
+    X_train_num = train_set.drop(['median_house_value', 'ocean_proximity'], axis=1)
+    X_train_cat = train_set[['ocean_proximity']]
+    X_test_num = test_set.drop(['median_house_value', 'ocean_proximity'], axis=1)
+    X_test_cat = test_set[['ocean_proximity']]
 
     # data clean
     imputer = SimpleImputer(strategy='median')
-    imputer.fit(housing_num)
     # print(imputer.statistics_)
-    X = imputer.transform(housing_num)
+    imputer.fit(X_train_num)
+    X_train_num = imputer.transform(X_train_num)
+    imputer.fit(X_test_num)
+    X_test_num = imputer.transform(X_test_num)
 
     # encoder = LabelEncoder()
-    encoder = OneHotEncoder()
-    housing_cat_1hot = encoder.fit_transform(housing_cat)
+    encoder = OneHotEncoder(sparse=False)
+    X_train_cat = encoder.fit_transform(X_train_cat)
+    X_test_cat = encoder.transform(X_test_cat)
 
     # avoid heavy-tail
-    attr_adder = CombinedAttributesAdder(add_bedrooms_per_room=False)
-    X = attr_adder.transform(X)
+    attr_adder = CombinedAttributesAdder()
+    X_train_num = attr_adder.transform(X_train_num)
+    X_test_num = attr_adder.transform(X_test_num)
 
     # data scale
     std_scaler = StandardScaler()
+    X_train_num = std_scaler.fit_transform(X_train_num)
+    X_test_num = std_scaler.transform(X_test_num)
 
-    X_train: np.ndarray = std_scaler.fit_transform(X)
+    X_train: np.ndarray = np.c_[X_train_num, X_train_cat]
     y_train: pd.Series = train_set['median_house_value'].copy()
-    X_test: pd.DataFrame = test_set.drop(labels='ocean_proximity', axis=1)
+
+    X_test: np.ndarray = np.c_[X_test_num, X_test_cat]
     y_test: pd.Series = test_set['median_house_value'].copy()
 
     return X_train, X_test, y_train, y_test

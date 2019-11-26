@@ -14,7 +14,7 @@ class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
         self.add_bedrooms_per_room = add_bedrooms_per_room
     def fit(self, X, y=None):
         return self # nothing else to do
-    def transform(self, X: np, y=None):
+    def transform(self, X: np, y=None) -> np.ndarray:
         rooms_per_household = X[:, self.rooms_ix] / X[:, self.household_ix]
         population_per_household = X[:, self.population_ix] / X[:, self.household_ix]
         if self.add_bedrooms_per_room:
@@ -27,7 +27,8 @@ class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
 def pipeline():
     # data acquisition
     train_set, test_set = data_division()
-    housing_num = train_set.drop(labels='ocean_proximity', axis=1)
+    housing = train_set.drop('median_house_value', axis=1)
+    housing_num = housing.drop('ocean_proximity', axis=1)
 
     # attributes acquisition
     num_attribs = list(housing_num)
@@ -45,9 +46,11 @@ def pipeline():
         ('cat', OneHotEncoder(), cat_attribs),
     ])
 
-    X_train: np.ndarray = full_pipeline.fit_transform(train_set)
+    X_train: np.ndarray = full_pipeline.fit_transform(housing)
     y_train: pd.Series = train_set['median_house_value'].copy()
-    X_test: pd.DataFrame = test_set.drop(labels='ocean_proximity', axis=1)
+
+    X_test = test_set.drop('median_house_value', axis=1)
+    X_test: np.ndarray = full_pipeline.transform(X_test)
     y_test: pd.Series = test_set['median_house_value'].copy()
 
     return X_train, X_test, y_train, y_test

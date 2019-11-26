@@ -5,6 +5,7 @@
       <w>figsize</w>
       <w>imputer</w>
       <w>kargs</w>
+      <w>rmse</w>
       <w>scaler</w>
       <w>sklearn</w>
       <w>strat</w>
