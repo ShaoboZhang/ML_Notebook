@@ -14,7 +14,7 @@ def display_scores(scores: np.ndarray):
     print('std:  %.3f' % scores.std())
 
 
-def model_comparision():
+def model_comparison():
     # data acquisition
     X_train, X_test, y_train, y_test = pipeline()
 
@@ -113,7 +113,7 @@ def grid_search():
 
 
 if __name__ == '__main__':
-    # model_comparision()
+    # model_comparison()
 
     # grid_search()
 
