@@ -8,11 +8,14 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
     rooms_ix, bedrooms_ix, population_ix, household_ix = 3, 4, 5, 6
-    def __init__(self, add_bedrooms_per_room = True): # no *args or **kargs
+
+    def __init__(self, add_bedrooms_per_room=True):  # no *args or **kargs
         self.add_bedrooms_per_room = add_bedrooms_per_room
+
     def fit(self, X, y=None):
-        return self # nothing else to do
-    def transform(self, X: np, y=None):
+        return self  # nothing else to do
+
+    def transform(self, X: np, y=None) -> np.ndarray:
         rooms_per_household = X[:, self.rooms_ix] / X[:, self.household_ix]
         population_per_household = X[:, self.population_ix] / X[:, self.household_ix]
         if self.add_bedrooms_per_room:
@@ -34,7 +37,7 @@ def pipeline():
     imputer = SimpleImputer(strategy='median')
     # print(imputer.statistics_)
     imputer.fit(X_train_num)
-    X_train_num = imputer.transform(X_train_num)
+    X_train_num = imputer.fit_transform(X_train_num)
     imputer.fit(X_test_num)
     X_test_num = imputer.transform(X_test_num)
 
@@ -45,7 +48,7 @@ def pipeline():
 
     # avoid heavy-tail
     attr_adder = CombinedAttributesAdder()
-    X_train_num = attr_adder.transform(X_train_num)
+    X_train_num = attr_adder.fit_transform(X_train_num)
     X_test_num = attr_adder.transform(X_test_num)
 
     # data scale

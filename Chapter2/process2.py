@@ -10,10 +10,13 @@ from sklearn.compose import ColumnTransformer
 
 class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
     rooms_ix, bedrooms_ix, population_ix, household_ix = 3, 4, 5, 6
-    def __init__(self, add_bedrooms_per_room = True): # no *args or **kargs
+
+    def __init__(self, add_bedrooms_per_room=True):  # no *args or **kargs
         self.add_bedrooms_per_room = add_bedrooms_per_room
+
     def fit(self, X, y=None):
-        return self # nothing else to do
+        return self  # nothing else to do
+
     def transform(self, X: np, y=None) -> np.ndarray:
         rooms_per_household = X[:, self.rooms_ix] / X[:, self.household_ix]
         population_per_household = X[:, self.population_ix] / X[:, self.household_ix]
